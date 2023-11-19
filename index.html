@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+    <div id="app-container">
+        <h1>Weather Forecast</h1>
+
+        <div id="search-container">
+            <input type="text" id="search-bar" placeholder="Enter city">
+            <button id="search-btn" onclick="searchWeather()">Search</button>
+        </div>
+
+        <div id="recent-searches">
+            <!-- Recent searches will be displayed here -->
+        </div>
+
+        <div id="weather-cards-container" style="display: flex; flex-wrap: wrap;"></div>
+
+    </div>
+
+    <script src="assets/js/script.js"></script>
+
+</body>
+</html>
