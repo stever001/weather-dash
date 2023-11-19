@@ -11,8 +11,24 @@ function searchWeather() {
 const apiKey = '9be6849b96b10ecac5547c81f0c81d08';
 
 function searchWeather() {
-    const city = 'YOUR_CITY'
-    const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`;
+    const city = 'Boise';
+    const apiUrl =  `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`;
+    ;
+
+    fetch(apiUrl)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Weather data:', data);
+            populateWeatherCards(data); // Call the function to populate weather cards
+        })
+        .catch(error => {
+            console.error('Error fetching weather data:', error);
+        });
 }
 
 function populateWeatherCards(data) {
