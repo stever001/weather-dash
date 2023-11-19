@@ -11,9 +11,18 @@ function searchWeather() {
 const apiKey = '9be6849b96b10ecac5547c81f0c81d08';
 
 function searchWeather() {
-    const city = 'Boise';
-    const apiUrl =  `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`;
-    ;
+    // Get the value of the input field with id 'search-bar'
+    const cityInput = document.getElementById('search-bar');
+    const city = cityInput.value;
+
+    // Check if the user has entered a city before making the API request
+    if (!city) {
+        alert('Please enter a city!');
+        return;
+    }
+
+    // Make the API request
+    const apiUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${apiKey}`;
 
     fetch(apiUrl)
         .then(response => {
@@ -53,3 +62,4 @@ function populateWeatherCards(data) {
         weatherCardsContainer.appendChild(card);
     });
 }
+
