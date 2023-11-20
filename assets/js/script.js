@@ -89,9 +89,13 @@ function searchWeather() {
         });
 }
 
+
 function populateCurrentWeatherCard(currentWeather) {
     const currentWeatherCardContainer = document.getElementById('current-weather-card-container');
     currentWeatherCardContainer.innerHTML = '';
+
+    const heroContainer = document.getElementById('current-weather-hero');
+    heroContainer.innerHTML = '';
 
     const card = document.createElement('div');
     card.classList.add('current-weather-card');
@@ -101,14 +105,16 @@ function populateCurrentWeatherCard(currentWeather) {
     card.innerHTML = `
         <h2>Current Weather</h2>
         <img class="weather-image" src="${iconUrl}" alt="${currentWeather.icon}">
-        <p>Temperature: ${currentWeather.temp}&deg;F</p>
-        <p>Wind Speed: ${currentWeather.wind_speed} mph</p>
+        <p>Temperature: ${Math.round(currentWeather.temp)}&deg;F</p>
+        <p>Wind Speed: ${Math.round(currentWeather.wind_speed)} mph</p>
         <p>Humidity: ${currentWeather.humidity}%</p>
-        <p>Chance of Precip: ${currentWeather.pop}%</p>
+        <p>Chance of Precip: ${Math.round(currentWeather.pop)}%</p>
     `;
 
     currentWeatherCardContainer.appendChild(card);
+    heroContainer.appendChild(card.cloneNode(true)); // Clone the card to display in the hero container
 }
+
 
 function populateWeatherCards(data) {
     const weatherCardsContainer = document.getElementById('weather-cards-container');
@@ -131,20 +137,27 @@ function populateWeatherCards(data) {
         card.innerHTML = `
             <p>${date}</p>
             <img class="weather-image" src="${iconUrl}" alt="${day.icon}">
-            <p>High: ${day.temp_max}&deg;F</p>
-            <p>Wind Speed: ${day.wind_speed} mph</p>
+            <p>High: ${Math.round(day.temp_max)}&deg;F</p>
+            <p>Wind Speed: ${Math.round(day.wind_speed)} mph</p>
             <p>Humidity: ${day.humidity}%</p>
-            <p>Chance of Precip: ${day.pop}%</p>
+            <p>Chance of Precip: ${Math.round(day.pop)}%</p>
         `;
 
         weatherCardsContainer.appendChild(card);
     });
 }
 
+//Convert the first character of each word to uppercase and the rest to lowercase
+function convertToMixedCase(input) {
+    return input.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
 function saveSearchToHistory(city) {
     const searchHistory = getSearchHistory();
-    if (!searchHistory.includes(city)) {
-        searchHistory.push(city);
+    const formattedCity = convertToMixedCase(city);
+
+    if (!searchHistory.includes(formattedCity)) {
+        searchHistory.push(formattedCity);
         localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
     }
 }
