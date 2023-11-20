@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     displaySearchHistory(searchHistory);
 });
 
-function filterDataForNoon(dataList) {
+/*function filterDataForNoon(dataList) {
     const filteredData = {};
 
     dataList.forEach(day => {
@@ -25,7 +25,66 @@ function filterDataForNoon(dataList) {
     });
 
     return Object.values(filteredData);
+}*/
+
+/*function filterDataForNoon(dataList) {
+    const filteredData = {};
+
+    dataList.forEach(day => {
+        const date = new Date(day.dt * 1000);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Exclude the current day and consider only the next five days
+        if (date > today && Object.keys(filteredData).length < 5) {
+            const dayKey = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+
+            if (!filteredData[dayKey]) {
+                filteredData[dayKey] = {
+                    date: date,
+                    icon: day.weather[0].icon,
+                    temp_max: day.main.temp_max,
+                    wind_speed: day.wind.speed,
+                    humidity: day.main.humidity,
+                    pop: day.pop,
+                };
+            }
+        }
+    });
+
+    return Object.values(filteredData);
 }
+*/
+
+//Forecast starts the next day after current day, for 5 days
+function filterDataForNoon(dataList) {
+    const filteredData = {};
+
+    dataList.forEach(day => {
+        const date = new Date(day.dt * 1000);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        // Exclude the current day and consider the next five days
+        if (date > today && Object.keys(filteredData).length < 6) {
+            const dayKey = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
+
+            if (!filteredData[dayKey]) {
+                filteredData[dayKey] = {
+                    date: date,
+                    icon: day.weather[0].icon,
+                    temp_max: day.main.temp_max,
+                    wind_speed: day.wind.speed,
+                    humidity: day.main.humidity,
+                    pop: day.pop,
+                };
+            }
+        }
+    });
+
+    return Object.values(filteredData);
+}
+
 
 function getCurrentWeather(dataList) {
     const currentDate = new Date();
@@ -118,7 +177,7 @@ function populateCurrentWeatherCard(currentWeather, city) {
     
 }
 
-function populateWeatherCards(data) {
+/*function populateWeatherCards(data) {
     const weatherCardsContainer = document.getElementById('weather-cards-container');
     weatherCardsContainer.innerHTML = '';
 
@@ -147,6 +206,40 @@ function populateWeatherCards(data) {
 
         weatherCardsContainer.appendChild(card);
     });
+}*/
+
+function populateWeatherCards(data) {
+    const weatherCardsContainer = document.getElementById('weather-cards-container');
+    weatherCardsContainer.innerHTML = '';
+
+    console.log('Filtered weather data:', data);
+
+    if (!data || data.length === 0) {
+        console.error('Invalid or empty data received.');
+        return;
+    }
+
+    // Skip the first element (current day) and start from the second element
+    for (let i = 1; i < data.length; i++) {
+        const day = data[i];
+
+        const card = document.createElement('div');
+        card.classList.add('weather-card');
+
+        const date = day.date.toLocaleDateString('en-US', { weekday: 'long' });
+        const iconUrl = `http://openweathermap.org/img/w/${day.icon}.png`;
+
+        card.innerHTML = `
+            <p>${date}</p>
+            <img class="weather-image" src="${iconUrl}" alt="${day.icon}">
+            <p>High: ${Math.round(day.temp_max)}&deg;F</p>
+            <p>Wind Speed: ${Math.round(day.wind_speed)} mph</p>
+            <p>Humidity: ${day.humidity}%</p>
+            <p>Chance of Precip: ${Math.round(day.pop)}%</p>
+        `;
+
+        weatherCardsContainer.appendChild(card);
+    }
 }
 
 //Convert the first character of each word to uppercase and the rest to lowercase
@@ -154,15 +247,33 @@ function convertToMixedCase(input) {
     return input.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
+/*function saveSearchToHistory(city) {
+    const searchHistory = getSearchHistory();
+    const formattedCity = convertToMixedCase(city);
+
+
+
+    if (!searchHistory.includes(formattedCity)) {
+        searchHistory.push(formattedCity);
+        localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
+    }
+}*/
+//updated to limit to 5 items in search history. Will remove oldest to maintain 5 or less
 function saveSearchToHistory(city) {
     const searchHistory = getSearchHistory();
     const formattedCity = convertToMixedCase(city);
+
+    // Limit the search history to a maximum of 5 items
+    if (searchHistory.length >= 5) {
+        searchHistory.shift(); // Remove the oldest item
+    }
 
     if (!searchHistory.includes(formattedCity)) {
         searchHistory.push(formattedCity);
         localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
     }
 }
+
 
 function getSearchHistory() {
     return JSON.parse(localStorage.getItem('searchHistory')) || [];
