@@ -27,6 +27,29 @@ function filterDataForNoon(dataList) {
     return Object.values(filteredData);
 }
 
+function getCurrentWeather(dataList) {
+    const currentDate = new Date();
+    const currentWeatherData = dataList.find(item => {
+        const itemDate = new Date(item.dt_txt);
+        return itemDate > currentDate;
+    });
+
+    if (!currentWeatherData) {
+        console.error('Current weather data not found.');
+        return null;
+    }
+
+    const currentWeather = {
+        icon: currentWeatherData.weather[0].icon,
+        temp: currentWeatherData.main.temp,
+        wind_speed: currentWeatherData.wind.speed,
+        humidity: currentWeatherData.main.humidity,
+        pop: currentWeatherData.pop,
+    };
+
+    return currentWeather;
+}
+
 function searchWeather() {
     const cityInput = document.getElementById('search-bar');
     const city = cityInput.value;
@@ -54,14 +77,37 @@ function searchWeather() {
             }
 
             const filteredData = filterDataForNoon(data.list);
+            const currentWeather = getCurrentWeather(data.list);
 
             populateWeatherCards(filteredData);
+            populateCurrentWeatherCard(currentWeather);
             saveSearchToHistory(city);
             displaySearchHistory(getSearchHistory());
         })
         .catch(error => {
             console.error('Error fetching weather data:', error);
         });
+}
+
+function populateCurrentWeatherCard(currentWeather) {
+    const currentWeatherCardContainer = document.getElementById('current-weather-card-container');
+    currentWeatherCardContainer.innerHTML = '';
+
+    const card = document.createElement('div');
+    card.classList.add('current-weather-card');
+
+    const iconUrl = `http://openweathermap.org/img/w/${currentWeather.icon}.png`;
+
+    card.innerHTML = `
+        <h2>Current Weather</h2>
+        <img class="weather-image" src="${iconUrl}" alt="${currentWeather.icon}">
+        <p>Temperature: ${currentWeather.temp}&deg;F</p>
+        <p>Wind Speed: ${currentWeather.wind_speed} mph</p>
+        <p>Humidity: ${currentWeather.humidity}%</p>
+        <p>Chance of Precip: ${currentWeather.pop}%</p>
+    `;
+
+    currentWeatherCardContainer.appendChild(card);
 }
 
 function populateWeatherCards(data) {
