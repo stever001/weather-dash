@@ -90,7 +90,6 @@ function searchWeather() {
 }
 
 
-
 function populateCurrentWeatherCard(currentWeather, city) {
 
     console.log('city in populateCurrentWeatherCard:', city); // Add this line for debugging
