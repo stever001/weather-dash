@@ -80,7 +80,7 @@ function searchWeather() {
             const currentWeather = getCurrentWeather(data.list);
 
             populateWeatherCards(filteredData);
-            populateCurrentWeatherCard(currentWeather);
+            populateCurrentWeatherCard(currentWeather, city); // Pass city to the function
             saveSearchToHistory(city);
             displaySearchHistory(getSearchHistory());
         })
@@ -90,20 +90,23 @@ function searchWeather() {
 }
 
 
-function populateCurrentWeatherCard(currentWeather) {
+
+function populateCurrentWeatherCard(currentWeather, city) {
+
+    console.log('city in populateCurrentWeatherCard:', city); // Add this line for debugging
     const currentWeatherCardContainer = document.getElementById('current-weather-card-container');
     currentWeatherCardContainer.innerHTML = '';
-
-    const heroContainer = document.getElementById('current-weather-hero');
-    heroContainer.innerHTML = '';
 
     const card = document.createElement('div');
     card.classList.add('current-weather-card');
 
     const iconUrl = `http://openweathermap.org/img/w/${currentWeather.icon}.png`;
 
+    const date = new Date(); // You can use a specific date format here if needed
+
     card.innerHTML = `
-        <h2>Current Weather</h2>
+        <h2>Current Weather in ${city}</h2>
+        <p class="card-date">${date.toLocaleDateString('en-US', { weekday: 'long' })}</p>
         <img class="weather-image" src="${iconUrl}" alt="${currentWeather.icon}">
         <p>Temperature: ${Math.round(currentWeather.temp)}&deg;F</p>
         <p>Wind Speed: ${Math.round(currentWeather.wind_speed)} mph</p>
@@ -112,9 +115,9 @@ function populateCurrentWeatherCard(currentWeather) {
     `;
 
     currentWeatherCardContainer.appendChild(card);
-    heroContainer.appendChild(card.cloneNode(true)); // Clone the card to display in the hero container
+    
+    
 }
-
 
 function populateWeatherCards(data) {
     const weatherCardsContainer = document.getElementById('weather-cards-container');
