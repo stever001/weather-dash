@@ -164,7 +164,7 @@ function populateCurrentWeatherCard(currentWeather, city) {
 
     card.innerHTML = `
         <h2>Current Weather in ${city}</h2>
-        <p class="card-date">${date.toLocaleDateString('en-US', { weekday: 'long' })}</p>
+        <p class="card-date">${date.toLocaleDateString('en-US', { weekday: 'long',month:'long', day:'numeric',hour: 'numeric',minute: 'numeric', hour12: 'true' })}</p>
         <img class="weather-image" src="${iconUrl}" alt="${currentWeather.icon}">
         <p>Temperature: ${Math.round(currentWeather.temp)}&deg;F</p>
         <p>Wind Speed: ${Math.round(currentWeather.wind_speed)} mph</p>
@@ -226,7 +226,7 @@ function populateWeatherCards(data) {
         const card = document.createElement('div');
         card.classList.add('weather-card');
 
-        const date = day.date.toLocaleDateString('en-US', { weekday: 'long' });
+        const date = day.date.toLocaleDateString('en-US', { weekday: 'long',month:'numeric',day:'numeric' });
         const iconUrl = `http://openweathermap.org/img/w/${day.icon}.png`;
 
         card.innerHTML = `
