@@ -5,57 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     displaySearchHistory(searchHistory);
 });
 
-/*function filterDataForNoon(dataList) {
-    const filteredData = {};
-
-    dataList.forEach(day => {
-        const date = new Date(day.dt * 1000);
-        const dayKey = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-
-        if (!filteredData[dayKey]) {
-            filteredData[dayKey] = {
-                date: date,
-                icon: day.weather[0].icon,
-                temp_max: day.main.temp_max,
-                wind_speed: day.wind.speed,
-                humidity: day.main.humidity,
-                pop: day.pop,
-            };
-        }
-    });
-
-    return Object.values(filteredData);
-}*/
-
-/*function filterDataForNoon(dataList) {
-    const filteredData = {};
-
-    dataList.forEach(day => {
-        const date = new Date(day.dt * 1000);
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        // Exclude the current day and consider only the next five days
-        if (date > today && Object.keys(filteredData).length < 5) {
-            const dayKey = `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
-
-            if (!filteredData[dayKey]) {
-                filteredData[dayKey] = {
-                    date: date,
-                    icon: day.weather[0].icon,
-                    temp_max: day.main.temp_max,
-                    wind_speed: day.wind.speed,
-                    humidity: day.main.humidity,
-                    pop: day.pop,
-                };
-            }
-        }
-    });
-
-    return Object.values(filteredData);
-}
-*/
-
 //Forecast starts the next day after current day, for 5 days
 function filterDataForNoon(dataList) {
     const filteredData = {};
@@ -169,44 +118,14 @@ function populateCurrentWeatherCard(currentWeather, city) {
         <p>Temperature: ${Math.round(currentWeather.temp)}&deg;F</p>
         <p>Wind Speed: ${Math.round(currentWeather.wind_speed)} mph</p>
         <p>Humidity: ${currentWeather.humidity}%</p>
-        <p>Chance of Precip: ${Math.round(currentWeather.pop)}%</p>
+        <p>Chance of Precip: ${5 * Math.round(currentWeather.pop / 5)}%</p>
+        <p>Chance of Precip: ${(Math.ceil(currentWeather.pop * 100 / 10) * 10)}%</p>
     `;
 
     currentWeatherCardContainer.appendChild(card);
     
     
 }
-
-/*function populateWeatherCards(data) {
-    const weatherCardsContainer = document.getElementById('weather-cards-container');
-    weatherCardsContainer.innerHTML = '';
-
-    console.log('Filtered weather data:', data);
-
-    if (!data || data.length === 0) {
-        console.error('Invalid or empty data received.');
-        return;
-    }
-
-    data.forEach(day => {
-        const card = document.createElement('div');
-        card.classList.add('weather-card');
-
-        const date = day.date.toLocaleDateString('en-US', { weekday: 'long' });
-        const iconUrl = `http://openweathermap.org/img/w/${day.icon}.png`;
-
-        card.innerHTML = `
-            <p>${date}</p>
-            <img class="weather-image" src="${iconUrl}" alt="${day.icon}">
-            <p>High: ${Math.round(day.temp_max)}&deg;F</p>
-            <p>Wind Speed: ${Math.round(day.wind_speed)} mph</p>
-            <p>Humidity: ${day.humidity}%</p>
-            <p>Chance of Precip: ${Math.round(day.pop)}%</p>
-        `;
-
-        weatherCardsContainer.appendChild(card);
-    });
-}*/
 
 function populateWeatherCards(data) {
     const weatherCardsContainer = document.getElementById('weather-cards-container');
@@ -235,7 +154,8 @@ function populateWeatherCards(data) {
             <p>High: ${Math.round(day.temp_max)}&deg;F</p>
             <p>Wind Speed: ${Math.round(day.wind_speed)} mph</p>
             <p>Humidity: ${day.humidity}%</p>
-            <p>Chance of Precip: ${Math.round(day.pop)}%</p>
+            <p>Chance of Precip: ${(Math.ceil(day.pop * 100 / 10) * 10)}%</p>
+           
         `;
 
         weatherCardsContainer.appendChild(card);
@@ -247,17 +167,6 @@ function convertToMixedCase(input) {
     return input.toLowerCase().replace(/\b\w/g, (char) => char.toUpperCase());
 }
 
-/*function saveSearchToHistory(city) {
-    const searchHistory = getSearchHistory();
-    const formattedCity = convertToMixedCase(city);
-
-
-
-    if (!searchHistory.includes(formattedCity)) {
-        searchHistory.push(formattedCity);
-        localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
-    }
-}*/
 //updated to limit to 5 items in search history. Will remove oldest to maintain 5 or less
 function saveSearchToHistory(city) {
     const searchHistory = getSearchHistory();
